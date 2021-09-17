@@ -1,1 +1,1 @@
-add_library(engine STATIC mnn/MnnEngine.cpp)
+add_library(engine STATIC mxnet/MxnetEngin.cpp)

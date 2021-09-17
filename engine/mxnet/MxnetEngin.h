@@ -20,7 +20,7 @@ typedef struct {
     std::string json;
     std::string params;
     int outputNum;
-    NCHW inputShape;
+    std::vector<uint> inputDims;
 }MxnetModel;
 
 class MxnetEngin final {
@@ -32,7 +32,7 @@ public:
     std::vector<arctern::Tensor<float>> inference(arctern::Tensor<float> & input);
 private:
     PredictorHandle netHandle_ ;  /// < mxnet predictor handle
-    std::unique_ptr<MxnetModel> info_;
+    int outputNum_;
 };
 
 

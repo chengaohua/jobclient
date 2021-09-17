@@ -4,7 +4,7 @@
 #include<signal.h>
 #include<unistd.h>
 #include <wait.h>
-#include "../deviceManager/device_manager.h"
+#include "../grpc/device_manager.h"
 
 void run_task_dispatch ()  {
   std::string target_str = "0.0.0.0:50051";

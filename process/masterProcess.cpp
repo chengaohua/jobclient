@@ -2,7 +2,7 @@
 // Created by gh on 2021/9/16.
 //
 
-#include "../deviceManager/device_manager.h"
+#include "../grpc/device_manager.h"
 #include "workProcess.h"
 #include "masterProcess.h"
 #include <stdio.h>

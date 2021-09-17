@@ -38,6 +38,8 @@ class DeviceManagerClient {
   // from the server.
   std::string report(int32_t device_id, const std::string &device_name) ;
   void dispatch() ;
+
+
  private:
   ///<  分发任务task
   void dispatchTask(DispatchJobIDStream & task);
