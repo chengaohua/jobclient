@@ -8,6 +8,8 @@
 #include "../hander/handerManager.h"
 #include "../dataset/dataset_mgr.h"
 #include "../grpc/job_manager.h"
+#include "../plugin/pluginManager.h"
+#include "../engine/engine.h"
 
 typedef enum {
   JOB_NONE,
@@ -119,16 +121,42 @@ void run_work() {
       DatasetMgr dataset_mgr;
       dataset_mgr.parse(dataset_path);
 
+      auto plugin_path = std::get<0>(model);
+      auto prePost = Plugin::loadPlugin(plugin_path);
 
+      std::vector<uint>  input_dims;
+      int  output_num;
+      std::vector<std::string>  output_layers;
+      prePost->initModel(input_dims, output_num, output_layers);
 
+      std::string model_json = std::get<1>(model);
+      std::string model_param = std::get<2>(model);
 
+      EngineFactory::ModelInfo model_info;
+      model_info.json = model_json;
+      model_info.params = model_param;
+      model_info.outputNum = output_num;
+      model_info.inputDims = input_dims;
 
+      auto engine = EngineFactory::buildEngine(model_info);
+      InputParam input_param;
+      int idx = 0;
+      std::string file_name = std::to_string(g_job_id) + ".txt";
+      std::ofstream of(file_name, std::ios::trunc| std::ios::out);
 
-
-
-
-
-
+      while (dataset_mgr.next(input_param) == 0) {
+        if(idx == 0) {
+          of<<"[";
+        }else {
+          of <<",";
+        }
+        auto input_tensor =prePost->PreProcess(input_param);
+        auto output_tensors = engine->inference(input_tensor);
+        auto result = prePost->PostProcess(output_tensors);
+        of<<result;
+        idx ++;
+      }
+      of <<"]";
 
     }
 
