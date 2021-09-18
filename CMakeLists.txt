@@ -44,6 +44,7 @@ add_executable(jobClient main.cpp
         grpc/device_manager.cpp
         grpc/job_manager.cpp
         task/taskManager.cpp
+        plugin/pluginManager.cpp
         dataset/dataset_mgr.cpp
         process/workProcess.cpp
         process/taskProcess.cpp

@@ -6,34 +6,30 @@
 #define TEST_MXNETENGIN_H
 
 #include "mxnet/c_predict_api.h"
+#include "../engine.h"
 #include <string>
-#include "tensor.h"
+
 
 typedef struct {
-    uint n;
-    uint c;
-    uint h;
-    uint w;
-}NCHW;
+  std::string json;
+  std::string params;
+  int outputNum;
+  std::vector<uint> inputDims;
+} MxnetModel;
 
-typedef struct {
-    std::string json;
-    std::string params;
-    int outputNum;
-    std::vector<uint> inputDims;
-}MxnetModel;
+class MxnetEngin final : public Engine{
+ public:
+  MxnetEngin();
 
-class MxnetEngin final {
-public:
-    MxnetEngin();
+  MxnetEngin(const MxnetEngin &) = delete;
+  MxnetEngin &operator=(const MxnetEngin &) = delete;
 
-    ~MxnetEngin();
-    bool loadModel(MxnetModel & info);
-    std::vector<arctern::Tensor<float>> inference(arctern::Tensor<float> & input);
-private:
-    PredictorHandle netHandle_ ;  /// < mxnet predictor handle
-    int outputNum_;
+  ~MxnetEngin();
+  bool loadModel(MxnetModel &info);
+  std::vector<arctern::Tensor<float>> inference(arctern::Tensor<float> &input) override;
+ private:
+  PredictorHandle netHandle_;  /// < mxnet predictor handle
+  int outputNum_;
 };
-
 
 #endif //TEST_MXNETENGIN_H

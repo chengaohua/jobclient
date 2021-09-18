@@ -6,9 +6,6 @@
 #include "MxnetEngin.h"
 #include <memory>
 #include <vector>
-#include <fstream>
-#include <iostream>
-
 
 static int LoadFile(const std::string &fname, std::vector<char> &buf) {
     std::ifstream fs(fname, std::ios::binary | std::ios::in);

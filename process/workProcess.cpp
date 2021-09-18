@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "../hander/handerManager.h"
+#include "../dataset/dataset_mgr.h"
 #include "../grpc/job_manager.h"
 
 typedef enum {
@@ -114,6 +115,15 @@ void run_work() {
 
       std::string dataset_path;
       greeter.GetJobDataset(g_job_id, dataset_path);
+
+      DatasetMgr dataset_mgr;
+      dataset_mgr.parse(dataset_path);
+
+
+
+
+
+
 
 
 
