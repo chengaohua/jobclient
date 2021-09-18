@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include <iostream>
 #include "../hander/handerManager.h"
-#include "../dataset/dataset_mgr.h"
+#include "dataset_mgr.h"
 #include "../grpc/job_manager.h"
-#include "../plugin/pluginManager.h"
+#include "pluginManager.h"
 #include "../engine/engine.h"
 
 typedef enum {

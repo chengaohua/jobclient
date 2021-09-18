@@ -43,12 +43,12 @@ add_executable(jobClient main.cpp
         hander/handerManager.cpp
         grpc/device_manager.cpp
         grpc/job_manager.cpp
-        task/taskManager.cpp
-        plugin/pluginManager.cpp
-        dataset/dataset_mgr.cpp
-        process/workProcess.cpp
-        process/taskProcess.cpp
-        process/masterProcess.cpp
+        taskProcess/taskManager.cpp
+        workProcess/pluginManager.cpp
+        workProcess/dataset_mgr.cpp
+        workProcess/workProcess.cpp
+        taskProcess/taskProcess.cpp
+        masterProcess/masterProcess.cpp
         ${hw_grpc_srcs}
         ${hw_grpc_hdrs}
         ${hw_proto_srcs}
@@ -56,5 +56,5 @@ add_executable(jobClient main.cpp
 
 target_link_libraries(jobClient  ${_REFLECTION}
         ${_GRPC_GRPCPP}
-        ${_PROTOBUF_LIBPROTOBUF})
+        ${_PROTOBUF_LIBPROTOBUF} engine ${OPENCV_LIBRARIES} )
 

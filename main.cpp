@@ -3,9 +3,9 @@
 //
 #include <iostream>
 #include<unistd.h>
-#include "task/taskManager.h"
-#include "process/masterProcess.h"
-#include "process/taskProcess.h"
+#include "taskProcess/taskManager.h"
+#include "masterProcess/masterProcess.h"
+#include "taskProcess/taskProcess.h"
 
 int main(int argc, char **argv) {
 

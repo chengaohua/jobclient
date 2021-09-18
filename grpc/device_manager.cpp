@@ -3,7 +3,7 @@
 //
 
 #include "device_manager.h"
-#include "../task/taskManager.h"
+#include "../taskProcess/taskManager.h"
 
 DeviceManagerClient::DeviceManagerClient(std::shared_ptr<grpc::Channel> channel) : stub_(JobManager::JobManager::NewStub(channel)) {
 }

@@ -3,7 +3,7 @@
 //
 
 #include "../grpc/device_manager.h"
-#include "workProcess.h"
+#include "../workProcess/workProcess.h"
 #include "masterProcess.h"
 #include <stdio.h>
 #include<signal.h>
@@ -53,7 +53,7 @@ void sig_child(int signum,siginfo_t *info,void *myact) {
 }
 
 void sig_sigusr1_from_child(int signum,siginfo_t *info,void *myact) {
-  //dispatch task to work process
+  //dispatch task to work masterProcess
   int task_id = info->si_int;
   task_info.task_id_ = task_id;
   task_info.task_status_ = TASK_CRETATE;
@@ -61,8 +61,8 @@ void sig_sigusr1_from_child(int signum,siginfo_t *info,void *myact) {
 }
 
 void sig_sigusr2_from_child(int signum,siginfo_t *info,void *myact) {
-  // dispatch task to work process
-  //dispatch task to work process
+  // dispatch task to work masterProcess
+  //dispatch task to work masterProcess
   int task_id = info->si_int;
   task_info.task_id_ = task_id;
   task_info.task_status_ = TASK_CANCEL;
