@@ -40,14 +40,15 @@ link_directories(${OPENCV_LIBRARY_DIRS})
 
 
 add_executable(jobClient main.cpp
-        hander/handerManager.cpp
+       # hander/handerManager.cpp
         grpc/device_manager.cpp
         grpc/job_manager.cpp
-        taskProcess/taskManager.cpp
+        dispatchProcess/taskManager.cpp
         workProcess/pluginManager.cpp
         workProcess/dataset_mgr.cpp
         workProcess/workProcess.cpp
-        taskProcess/taskProcess.cpp
+        workProcess/jobTask.cpp
+        dispatchProcess/dispatchProcess.cpp
         masterProcess/masterProcess.cpp
         ${hw_grpc_srcs}
         ${hw_grpc_hdrs}

@@ -6,10 +6,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "../hander/handerManager.h"
-#include "dataset_mgr.h"
-#include "../grpc/job_manager.h"
-#include "pluginManager.h"
-#include "../engine/engine.h"
+
 
 typedef enum {
   JOB_NONE,
@@ -103,9 +100,7 @@ void run_work() {
   registerSignal(SIGUSR1, sig_siguser1_from_parent);
   registerSignal(SIGUSR2, sig_siguser2_from_parent);
 
-  std::string target_str = "0.0.0.0:50051";
-  JobManagerClient greeter(
-      grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
+
 
 
   while (true) {
@@ -139,7 +134,7 @@ void run_work() {
       model_info.inputDims = input_dims;
 
       auto engine = EngineFactory::buildEngine(model_info);
-      InputParam input_param;
+
       int idx = 0;
       std::string file_name = std::to_string(g_job_id) + ".txt";
       std::ofstream of(file_name, std::ios::trunc| std::ios::out);
@@ -150,9 +145,7 @@ void run_work() {
         }else {
           of <<",";
         }
-        auto input_tensor =prePost->PreProcess(input_param);
-        auto output_tensors = engine->inference(input_tensor);
-        auto result = prePost->PostProcess(output_tensors);
+
         of<<result;
         idx ++;
       }

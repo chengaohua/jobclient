@@ -45,7 +45,12 @@ void DatasetMgr::parse(std::string dataset_path) {
 int DatasetMgr::next(InputParam &input_param) {
   if(pos_ < length()) {
     input_param = sets_[pos_];
-    return 0;
+    if(pos_ == 0) {
+      return DATASET_BEGIN;
+    } else if ( pos_ == (length() - 1)) {
+      return DATASET_END;
+    }
+    return DATASET_MIDDLE;
   }
   return -1;
 }

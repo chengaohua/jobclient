@@ -8,6 +8,10 @@
 #include "opencv2/opencv.hpp"
 #include "prePost.h"
 
+#define DATASET_BEGIN  0
+#define DATASET_MIDDLE 1
+#define DATASET_END  2
+
 class DatasetMgr final {
  public:
   DatasetMgr();
@@ -18,6 +22,7 @@ class DatasetMgr final {
 
   void parse(std::string dataset_path);
 
+  /// 0:begin 1:middle 2:end -1:err
   int next( InputParam & input_param);
 
   int length();
