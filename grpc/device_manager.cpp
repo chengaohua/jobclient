@@ -3,9 +3,10 @@
 //
 
 #include "device_manager.h"
-#include "../taskProcess/taskManager.h"
+#include "../config.h"
+#include "../dispatchProcess/taskManager.h"
 
-DeviceManagerClient::DeviceManagerClient(std::shared_ptr<grpc::Channel> channel) : stub_(JobManager::JobManager::NewStub(channel)) {
+DeviceManagerClient::DeviceManagerClient(std::shared_ptr<grpc::Channel> channel) : stub_(taskmanager::TaskManagerBack::NewStub(channel)) {
 }
 
 std::string DeviceManagerClient::report(int32_t device_id, const std::string &device_name) {
@@ -37,16 +38,16 @@ std::string DeviceManagerClient::report(int32_t device_id, const std::string &de
 
 
 void DeviceManagerClient::dispatch() {
-  DispatchJobIDRequest request;
-  request.set_device_id(1024);
+  DispatchTaskIDRequest request;
+  request.set_device_id(getDeviceId());
   grpc::ClientContext context;
-  std::unique_ptr<grpc::ClientReader < DispatchJobIDStream> > reader(
-      stub_->DispatchJobID(&context, request));
-  DispatchJobIDStream task;
+  std::unique_ptr<grpc::ClientReader < DispatchTaskIDStream> > reader(
+      stub_->DispatchTaskID(&context, request));
+  DispatchTaskIDStream task;
   while (reader->Read(&task)) {
 
     dispatchTask(task);
-    std::cout<<task.job_id()<<std::endl;
+    std::cout<<task.task_id()<<std::endl;
   }
   Status status = reader->Finish();
   if (status.ok()) {
@@ -58,14 +59,14 @@ void DeviceManagerClient::dispatch() {
 
 
 
-void DeviceManagerClient::dispatchTask(DispatchJobIDStream &task) {
-  if(task.job_type() == JobManager::JobTypeCreateJob) {
+void DeviceManagerClient::dispatchTask(DispatchTaskIDStream &task) {
+  if(task.task_type() == taskmanager::TaskTypeCreateTask) {
     /// new task job
-    taskManager::createTask(task.job_id());
+    taskManager::createTask(task.task_id());
 
-  } else if (JobManager::JobTypeCancelJob == task.job_type()) {
+  } else if (taskmanager::TaskTypeCancelTask == task.task_type()) {
     /// cancel task job
-    taskManager::cancelTask(task.job_id());
+    taskManager::cancelTask(task.task_id());
   }
 }
 

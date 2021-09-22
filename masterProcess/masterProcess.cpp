@@ -4,12 +4,14 @@
 
 #include "../grpc/device_manager.h"
 #include "../workProcess/workProcess.h"
+#include "../grpc/job_manager.h"
 #include "masterProcess.h"
 #include <stdio.h>
 #include<signal.h>
 #include<unistd.h>
 #include <wait.h>
 #include <atomic>
+#include "../config.h"
 
 #define INVALID_PROCESS 0
 
@@ -82,6 +84,13 @@ void checkWorkProcess() {
       //parent
       work_process_info.process_status_ = WORK_PROCESS_RUNNING;
       work_process_info.pid_ = pid;
+      if(task_info.task_status_ == TASK_CRETATE) {
+        // child process crashed
+        std::string target_str = getGrpcServer();
+        auto client = JobManagerClient(grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
+        //todo 子进程崩溃
+        client.ReportTask(task_info.task_id_, taskmanager::TaskStatusWAIT, 0, "");
+      }
     }
   }
 }
@@ -120,7 +129,7 @@ void run_master() {
   registerSignal(SIGUSR2, sig_sigusr2_from_child);
   registerSignal(SIGCHLD, sig_child);
 
-  std::string target_str = "0.0.0.0:50051";
+  std::string target_str = getGrpcServer();
   DeviceManagerClient greeter(
       grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
 
@@ -128,7 +137,7 @@ void run_master() {
     checkWorkProcess();
     checkTask();
     std::string user;
-    std::string reply = greeter.report(10024, user);
+    std::string reply = greeter.report(getDeviceId(), user);
     std::cout << "Greeter received: " << reply << std::endl;
     sleep(10);
   }

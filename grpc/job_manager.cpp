@@ -3,25 +3,24 @@
 //
 
 #include "job_manager.h"
-#include "../taskProcess/taskManager.h"
 
-JobManagerClient::JobManagerClient(std::shared_ptr<grpc::Channel> channel) : stub_(JobManager::JobManager::NewStub(channel)) {
+JobManagerClient::JobManagerClient(std::shared_ptr<grpc::Channel> channel) : stub_(taskmanager::TaskManagerBack::NewStub(channel)) {
 }
 
-int  JobManagerClient::GetJobAimodel(int job_id, std::tuple<std::string, std::string, std::string> &model){
+int  JobManagerClient::GetTaskAimodel(int job_id, std::tuple<std::string, std::string, std::string> &model){
   // Data we are sending to the server.
-  GetJobAimodelRequest request;
-  request.set_job_id(job_id);
+  GetTaskAimodelRequest request;
+  request.set_task_id(job_id);
 
   // Container for the data we expect from the server.
-  GetJobAimodelReply reply;
+  GetTaskAimodelReply reply;
 
   // Context for the client. It could be used to convey extra information to
   // the server and/or tweak certain RPC behaviors.
   grpc::ClientContext context;
 
   // The actual RPC.
-  Status status = stub_->GetJobAimodel(&context, request, &reply);
+  Status status = stub_->GetTaskAimodel(&context, request, &reply);
 
   // Act upon its status.
   if (status.ok()) {
@@ -36,20 +35,20 @@ int  JobManagerClient::GetJobAimodel(int job_id, std::tuple<std::string, std::st
   }
 }
 
-int JobManagerClient::GetJobDataset(int job_id, std::string & dataset_path)  {
+int JobManagerClient::GetTaskDataset(int job_id, std::string & dataset_path)  {
   // Data we are sending to the server.
-  GetJobDatasetRequest request;
-  request.set_job_id(job_id);
+  GetTaskDatasetRequest request;
+  request.set_task_id(job_id);
 
   // Container for the data we expect from the server.
-  GetJobDatasetReply reply;
+  GetTaskDatasetReply reply;
 
   // Context for the client. It could be used to convey extra information to
   // the server and/or tweak certain RPC behaviors.
   grpc::ClientContext context;
 
   // The actual RPC.
-  Status status = stub_->GetJobDataset(&context, request, &reply);
+  Status status = stub_->GetTaskDataset(&context, request, &reply);
 
   // Act upon its status.
   if (status.ok()) {
@@ -62,23 +61,23 @@ int JobManagerClient::GetJobDataset(int job_id, std::string & dataset_path)  {
   }
 }
 
-void JobManagerClient::ReportJob(int job_id, EnumJobStatus job_status, int job_progress, std::string json_result ) {
+void JobManagerClient::ReportTask(int job_id, EnumTaskStatus job_status, int job_progress, std::string json_result ) {
   // Data we are sending to the server.
-  ReportJobRequest request;
-  request.set_job_id(job_id);
-  request.set_job_status(job_status);
-  request.set_job_progress(job_progress);
+  ReportTaskRequest request;
+  request.set_task_id(job_id);
+  request.set_task_status(job_status);
+  request.set_task_progress(job_progress);
   request.set_json_result(json_result);
 
   // Container for the data we expect from the server.
-  ReportJobReply reply;
+  ReportTaskReply reply;
 
   // Context for the client. It could be used to convey extra information to
   // the server and/or tweak certain RPC behaviors.
   grpc::ClientContext context;
 
   // The actual RPC.
-  Status status = stub_->ReportJob(&context, request, &reply);
+  Status status = stub_->ReportTask(&context, request, &reply);
 
   // Act upon its status.
   if (status.ok()) {

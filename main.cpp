@@ -3,11 +3,16 @@
 //
 #include <iostream>
 #include<unistd.h>
-#include "taskProcess/taskManager.h"
+#include "config.h"
+#include "dispatchProcess/taskManager.h"
 #include "masterProcess/masterProcess.h"
-#include "taskProcess/taskProcess.h"
+#include "dispatchProcess/dispatchProcess.h"
 
 int main(int argc, char **argv) {
+
+  initDeviceId(10010);
+  initGrpcServer(argv[1]);
+
 
   auto parent_pid = getpid();
   taskManager::initParentPID(parent_pid);

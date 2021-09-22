@@ -20,11 +20,14 @@ class JobTask {
   JobTask & operator=(const JobTask &) = delete;
   ~JobTask();
 
-  int next(std::string &);
+  int next();
 
  private:
   int init();
 
+  int report();
+
+  int reportEnd();
  private:
   std::string so_path_ ;
   std::string aimodel_json_ ;

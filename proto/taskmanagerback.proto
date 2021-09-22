@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+option go_package = "api/taskmanager/v1";
+package taskmanager;
+
+service TaskManagerBack {
+    // 上报设备状态
+    rpc ReportDevice(ReportDeviceRequest) returns (ReportDeviceReply) {}
+    // 上报任务状态
+    rpc ReportTask(ReportTaskRequest) returns (ReportTaskReply) {}
+    // 下发任务，创建或取消任务
+    rpc DispatchTaskID(DispatchTaskIDRequest) returns (stream DispatchTaskIDStream) {}
+    // 获取任务模型
+    rpc GetTaskAimodel(GetTaskAimodelRequest)returns(GetTaskAimodelReply) {}
+    // 获取任务数据集
+    rpc GetTaskDataset(GetTaskDatasetRequest)returns(GetTaskDatasetReply) {}
+}
+
+message ReportDeviceRequest {
+    int32 device_id = 1;
+    string device_name = 2;
+    CpuInfo cpu_info = 3;
+    MemoryInfo memory_info = 4;
+    GpuInfo gpu_info = 5;
+}
+message ReportDeviceReply {
+}
+
+message ReportTaskRequest {
+    int64 task_id = 1;
+    EnumTaskStatus task_status = 2;
+    int32 task_progress = 3;
+    string json_result = 4;
+}
+message ReportTaskReply {
+}
+
+message CpuInfo {
+    string cpu_model = 1;
+    string cpu_arch = 2;
+    int32 cpu_cnt = 3;
+    int32 cup_usage = 4;
+}
+
+message MemoryInfo {
+    string memory_model = 1;
+    int32 memory_size = 2;
+    int32 memory_available = 3;
+}
+
+message GpuInfo {
+    string gpu_model = 1;
+    int32 memory_size = 2;
+    int32 memory_available = 3;
+}
+
+message Empty {
+}
+
+message DispatchTaskIDRequest {
+    int64 device_id = 1;
+    string device_name = 2;
+    int64 platform_id = 3;
+    string platform_name = 4;
+}
+
+message DispatchTaskIDStream {
+    EnumTaskType task_type = 1;
+    int64 task_id = 2;
+}
+
+enum EnumTaskType {
+    TaskTypeNONE = 0;
+    TaskTypeCreateTask = 1;
+    TaskTypeCancelTask = 2;
+}
+
+enum EnumTaskStatus {
+    TaskStatusNONE = 0;
+    TaskStatusWAIT = 1;
+    TaskStatusSTART = 2;
+    TaskStatusFINISH = 3;
+}
+
+message GetTaskAimodelRequest {
+    int64 task_id = 1;
+}
+
+message GetTaskAimodelReply {
+    string so_path = 1;
+    string aimodel_path1 = 2;
+    string aimodel_path2 = 3;
+}
+
+message GetTaskDatasetRequest {
+    int64 task_id = 1;
+}
+
+message GetTaskDatasetReply {
+    string dataset_path = 1;
+}
+

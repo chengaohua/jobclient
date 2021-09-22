@@ -5,7 +5,9 @@
 #include "workProcess.h"
 #include <stdio.h>
 #include <iostream>
-#include "../hander/handerManager.h"
+#include <csignal>
+#include "jobTask.h"
+#include <signal.h>
 
 
 typedef enum {
@@ -47,7 +49,11 @@ typedef enum {
 OPERATOR status_check() {
   if(CMD_NONE == g_cmd.cmd ) {
     if(JOB_NONE == g_job_status) {
-      sigsuspend(nullptr);
+
+      // 进程挂起
+      sigset_t empty;
+      sigemptyset(&empty);
+      sigsuspend(&empty);
       return OPERATOR_CONTINUE;
     } else if(JOB_RUNNING == g_job_status) {
       return OPERATOR_CONTINUE;
@@ -58,11 +64,15 @@ OPERATOR status_check() {
     if(JOB_NONE == g_job_status) {
       // begin run job
       g_job_id = g_cmd.task_id;
+      g_cmd.cmd = CMD_NONE;
+      g_job_status = JOB_RUNNING;
 
       return OPERATOR_RESET;
-    } else if(JOB_RUNNING == g_job_status) {
+    } else {
       //continue run
       g_job_id = g_cmd.task_id;
+      g_cmd.cmd = CMD_NONE;
+      g_job_status = JOB_RUNNING;
       return OPERATOR_RESET;
     }
 
@@ -71,9 +81,13 @@ OPERATOR status_check() {
   if(CMD_CANCEL == g_cmd.cmd) {
     if(JOB_NONE == g_job_status) {
       // begin run job
+      g_job_status = JOB_NONE;
+      g_cmd.cmd = CMD_NONE;
       return OPERATRO_CANCEL;
     } else if(JOB_RUNNING == g_job_status) {
       //continue run
+      g_cmd.cmd = CMD_NONE;
+      g_job_status = JOB_NONE;
       return OPERATRO_CANCEL;
     }
   }
@@ -100,57 +114,17 @@ void run_work() {
   registerSignal(SIGUSR1, sig_siguser1_from_parent);
   registerSignal(SIGUSR2, sig_siguser2_from_parent);
 
-
-
-
   while (true) {
     // std::cout<<"run child ! \n";
     auto op = status_check();
+    std::unique_ptr<JobTask> job;
+
     if(OPERATOR_RESET == op) {
-      std::tuple<std::string, std::string, std::string> model;
-      greeter.GetJobAimodel(g_job_id, model);
-
-      std::string dataset_path;
-      greeter.GetJobDataset(g_job_id, dataset_path);
-
-      DatasetMgr dataset_mgr;
-      dataset_mgr.parse(dataset_path);
-
-      auto plugin_path = std::get<0>(model);
-      auto prePost = Plugin::loadPlugin(plugin_path);
-
-      std::vector<uint>  input_dims;
-      int  output_num;
-      std::vector<std::string>  output_layers;
-      prePost->initModel(input_dims, output_num, output_layers);
-
-      std::string model_json = std::get<1>(model);
-      std::string model_param = std::get<2>(model);
-
-      EngineFactory::ModelInfo model_info;
-      model_info.json = model_json;
-      model_info.params = model_param;
-      model_info.outputNum = output_num;
-      model_info.inputDims = input_dims;
-
-      auto engine = EngineFactory::buildEngine(model_info);
-
-      int idx = 0;
-      std::string file_name = std::to_string(g_job_id) + ".txt";
-      std::ofstream of(file_name, std::ios::trunc| std::ios::out);
-
-      while (dataset_mgr.next(input_param) == 0) {
-        if(idx == 0) {
-          of<<"[";
-        }else {
-          of <<",";
-        }
-
-        of<<result;
-        idx ++;
-      }
-      of <<"]";
-
+      job.reset(new JobTask(g_job_id));
+    } else if( OPERATOR_CONTINUE == op)  {
+      job->next();
+    } else if (OPERATRO_CANCEL == op) {
+      continue;
     }
 
   }

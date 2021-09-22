@@ -8,28 +8,28 @@
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
-#include "jobmanager.pb.h"
-#include "jobmanager.grpc.pb.h"
+#include "taskmanagerback.pb.h"
+#include "taskmanagerback.grpc.pb.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
-using JobManager::ReportDeviceRequest;
-using JobManager::ReportDeviceReply;
-using JobManager::ReportJobRequest;
-using JobManager::ReportJobReply;
-using JobManager::CpuInfo;
-using JobManager::MemoryInfo;
-using JobManager::GpuInfo;
-using JobManager::DispatchJobIDRequest;
-using JobManager::DispatchJobIDStream;
-using JobManager::EnumJobType;
-using JobManager::EnumJobStatus;
-using JobManager::GetJobAimodelRequest;
-using JobManager::GetJobAimodelReply;
-using JobManager::GetJobDatasetRequest;
-using JobManager::GetJobAimodelReply;
+using taskmanager::ReportDeviceRequest;
+using taskmanager::ReportDeviceReply;
+using taskmanager::ReportTaskRequest;
+using taskmanager::ReportTaskReply;
+using taskmanager::CpuInfo;
+using taskmanager::MemoryInfo;
+using taskmanager::GpuInfo;
+using taskmanager::DispatchTaskIDRequest;
+using taskmanager::DispatchTaskIDStream;
+using taskmanager::EnumTaskType;
+using taskmanager::EnumTaskStatus;
+using taskmanager::GetTaskAimodelRequest;
+using taskmanager::GetTaskAimodelReply;
+using taskmanager::GetTaskDatasetRequest;
+using taskmanager::GetTaskAimodelReply;
 
 class DeviceManagerClient {
  public:
@@ -42,8 +42,8 @@ class DeviceManagerClient {
 
  private:
   ///<  分发任务task
-  void dispatchTask(DispatchJobIDStream & task);
-  std::unique_ptr<JobManager::JobManager::Stub> stub_;
+  void dispatchTask(DispatchTaskIDStream & task);
+  std::unique_ptr<taskmanager::TaskManagerBack::Stub> stub_;
 };
 
 #endif //TEST_DEVICEMANAGER_DEVICE_MANAGER_H_
