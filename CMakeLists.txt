@@ -45,13 +45,12 @@ add_executable(jobClient main.cpp
         workProcess/taskQueue.cpp
         grpc/device_manager.cpp
         grpc/job_manager.cpp
-        dispatchProcess/taskManager.cpp
         workProcess/pluginManager.cpp
         workProcess/dataset_mgr.cpp
         workProcess/workProcess.cpp
         workProcess/jobTask.cpp
         dispatchProcess/dispatchProcess.cpp
-        masterProcess/masterProcess.cpp
+        reportProcess/reportProcess.cpp
         config.cpp
         ${hw_grpc_srcs}
         ${hw_grpc_hdrs}

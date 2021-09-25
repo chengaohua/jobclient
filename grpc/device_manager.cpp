@@ -4,7 +4,6 @@
 
 #include "device_manager.h"
 #include "../config.h"
-#include "../dispatchProcess/taskManager.h"
 
 DeviceManagerClient::DeviceManagerClient(std::shared_ptr<grpc::Channel> channel) : stub_(taskmanager::TaskManagerBack::NewStub(channel)) {
 }
@@ -37,7 +36,7 @@ std::string DeviceManagerClient::report(int32_t device_id, const std::string &de
 
 
 
-void DeviceManagerClient::dispatch() {
+void DeviceManagerClient::dispatch(DispatchCallback & callback) {
   DispatchTaskIDRequest request;
   request.set_device_id(getDeviceId());
   grpc::ClientContext context;
@@ -45,9 +44,20 @@ void DeviceManagerClient::dispatch() {
       stub_->DispatchTaskID(&context, request));
   DispatchTaskIDStream task;
   while (reader->Read(&task)) {
-
-    dispatchTask(task);
-    std::cout<<task.task_id()<<std::endl;
+    TASK_INFO  task_info;
+    task_info.task_id = task.task_id();
+    std::cout<<"work--------------------->"<<__FILE__<<"  "<<__LINE__<<std::endl;
+    switch (task.task_type()) {
+      case taskmanager::TaskTypeCreateTask:
+        task_info.cmd = TASK_CREATE;
+        callback.callback(task_info);
+        break;
+      case taskmanager::TaskTypeCancelTask:
+        task_info.cmd = TASK_CANCEL;
+        callback.callback(task_info);
+      default:
+        break;
+    }
   }
   Status status = reader->Finish();
   if (status.ok()) {
@@ -59,14 +69,5 @@ void DeviceManagerClient::dispatch() {
 
 
 
-void DeviceManagerClient::dispatchTask(DispatchTaskIDStream &task) {
-  if(task.task_type() == taskmanager::TaskTypeCreateTask) {
-    /// new task job
-    taskManager::createTask(task.task_id());
 
-  } else if (taskmanager::TaskTypeCancelTask == task.task_type()) {
-    /// cancel task job
-    taskManager::cancelTask(task.task_id());
-  }
-}
 

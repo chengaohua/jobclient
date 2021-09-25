@@ -4782,7 +4782,7 @@ class file_input_adapter
 Input adapter for a (caching) istream. Ignores a UFT Byte Order Mark at
 beginning of input. Does not support changing the underlying std::streambuf
 in mid-input. Maintains underlying std::istream and std::streambuf to support
-subsequent use of standard std::istream operations to masterProcess any input
+subsequent use of standard std::istream operations to reportProcess any input
 characters following those used in parsing the JSON input.  Clears the
 std::istream flags; any input errors (e.g., EOF) will be detected by the first
 subsequent call for input from the std::istream.
@@ -7363,7 +7363,7 @@ scan_number_done:
         }
 
         // the first character is not the beginning of the BOM; unget it to
-        // masterProcess is later
+        // reportProcess is later
         unget();
         return true;
     }
@@ -10136,11 +10136,11 @@ namespace detail
 
 enum class parse_event_t : uint8_t
 {
-    /// the parser read `{` and started to masterProcess a JSON object
+    /// the parser read `{` and started to reportProcess a JSON object
     object_start,
     /// the parser read `}` and finished processing a JSON object
     object_end,
-    /// the parser read `[` and started to masterProcess a JSON array
+    /// the parser read `[` and started to reportProcess a JSON array
     array_start,
     /// the parser read `]` and finished processing a JSON array
     array_end,
@@ -12254,7 +12254,7 @@ class json_pointer
                 default:
                 {
                     // we do not expect primitive values if there is still a
-                    // reference token to masterProcess
+                    // reference token to reportProcess
                     return false;
                 }
             }
@@ -17724,10 +17724,10 @@ class basic_json
     @brief parser event types
 
     The parser callback distinguishes the following events:
-    - `object_start`: the parser read `{` and started to masterProcess a JSON object
+    - `object_start`: the parser read `{` and started to reportProcess a JSON object
     - `key`: the parser read a key of a value in an object
     - `object_end`: the parser read `}` and finished processing a JSON object
-    - `array_start`: the parser read `[` and started to masterProcess a JSON array
+    - `array_start`: the parser read `[` and started to reportProcess a JSON array
     - `array_end`: the parser read `]` and finished processing a JSON array
     - `value`: the parser finished reading a JSON value
 
@@ -17753,10 +17753,10 @@ class basic_json
 
     parameter @a event | description | parameter @a depth | parameter @a parsed
     ------------------ | ----------- | ------------------ | -------------------
-    parse_event_t::object_start | the parser read `{` and started to masterProcess a JSON object | depth of the parent of the JSON object | a JSON value with type discarded
+    parse_event_t::object_start | the parser read `{` and started to reportProcess a JSON object | depth of the parent of the JSON object | a JSON value with type discarded
     parse_event_t::key | the parser read a key of a value in an object | depth of the currently parsed JSON object | a JSON string containing the key
     parse_event_t::object_end | the parser read `}` and finished processing a JSON object | depth of the parent of the JSON object | the parsed JSON object
-    parse_event_t::array_start | the parser read `[` and started to masterProcess a JSON array | depth of the parent of the JSON array | a JSON value with type discarded
+    parse_event_t::array_start | the parser read `[` and started to reportProcess a JSON array | depth of the parent of the JSON array | a JSON value with type discarded
     parse_event_t::array_end | the parser read `]` and finished processing a JSON array | depth of the parent of the JSON array | the parsed JSON array
     parse_event_t::value | the parser finished reading a JSON value | depth of the value | the parsed JSON value
 

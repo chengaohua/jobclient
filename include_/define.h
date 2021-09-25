@@ -5,6 +5,9 @@
 #ifndef TEST_INCLUDE__DEFINE_H_
 #define TEST_INCLUDE__DEFINE_H_
 
+#define  TASK_CREATE  0
+#define TASK_CANCEL  1
+
 typedef struct {
   int cmd;  // 0 :create  1: cancel
   long task_id;

@@ -10,6 +10,7 @@
 #include <grpcpp/health_check_service_interface.h>
 #include "taskmanagerback.pb.h"
 #include "taskmanagerback.grpc.pb.h"
+#include "../dispatchProcess/dispatchProcess.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -37,12 +38,12 @@ class DeviceManagerClient {
   // Assembles the client's payload, sends it and presents the response back
   // from the server.
   std::string report(int32_t device_id, const std::string &device_name) ;
-  void dispatch() ;
+  void dispatch(DispatchCallback & callback) ;
 
 
  private:
   ///<  分发任务task
-  void dispatchTask(DispatchTaskIDStream & task);
+ // void dispatchTask(DispatchTaskIDStream & task);
   std::unique_ptr<taskmanager::TaskManagerBack::Stub> stub_;
 };
 
