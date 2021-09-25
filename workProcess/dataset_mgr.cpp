@@ -16,12 +16,14 @@ DatasetMgr::~DatasetMgr() {
 
 void DatasetMgr::parse(std::string dataset_path) {
   using nlohmann::json;
+  std::cout<<"work--------------------->"<<__FILE__<<"  "<<__LINE__<<std::endl;
   std::ifstream i(dataset_path);
   json j;
   i >> j;
+  std::cout<<"work--------------------->"<<__FILE__<<"  "<<__LINE__<<std::endl;
   for(auto it = j.begin(); it != j.end(); ++it) {
     InputParam data;
-    data.path = (*it)["path"].get<std::string>();
+    data.path = (*it)["filepath"].get<std::string>();
     if(it->contains("rect")) {
       auto rect = (*it)["rect"].get<std::vector<float>>();
       data.rect.x = rect[0];
@@ -37,6 +39,7 @@ void DatasetMgr::parse(std::string dataset_path) {
         data.landmarks.push_back(point);
       }
     }
+    //std::cout<<"work--------------------->"<<__FILE__<<"  "<<__LINE__<<std::endl;
 
     sets_.push_back(data);
   }

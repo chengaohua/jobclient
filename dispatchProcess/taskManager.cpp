@@ -32,7 +32,7 @@ void createTask(int taskid) {
   //不代表具体含义，只用于说明问题
 
   if(sigqueue(parent_pid,signum,mysigval)==-1)
-    printf("send error＼n");
+    printf("send3 error＼n");
 }
 
 void cancelTask(int taskid) {
@@ -47,7 +47,7 @@ void cancelTask(int taskid) {
   //不代表具体含义，只用于说明问题
 
   if(sigqueue(parent_pid,signum,mysigval)==-1)
-    printf("send error＼n");
+    printf("send4 error＼n");
 
   current_task = INVALIDTASKID;
 }

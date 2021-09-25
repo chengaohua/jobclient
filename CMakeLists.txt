@@ -34,9 +34,9 @@ pkg_search_module(OPENCV REQUIRED opencv)
 include_directories(${OPENCV_INCLUDE_DIRS})
 link_directories(${OPENCV_LIBRARY_DIRS})
 
-#
-#add_library(plugin SHARED custom.cpp)
-#target_link_libraries(plugin ${OPENCV_LIBRARIES} )
+
+add_library(plugin SHARED test/attr.cpp)
+target_link_libraries(plugin ${OPENCV_LIBRARIES} )
 
 
 add_executable(jobClient main.cpp

@@ -19,8 +19,11 @@ int  JobManagerClient::GetTaskAimodel(int job_id, std::tuple<std::string, std::s
   // the server and/or tweak certain RPC behaviors.
   grpc::ClientContext context;
 
+  std::cout<<"work--------------------->"<<__FILE__<<"  "<<__LINE__<<std::endl;
   // The actual RPC.
   Status status = stub_->GetTaskAimodel(&context, request, &reply);
+
+  std::cout<<"work--------------------->"<<__FILE__<<"  "<<__LINE__<<std::endl;
 
   // Act upon its status.
   if (status.ok()) {

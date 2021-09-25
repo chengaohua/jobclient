@@ -44,6 +44,7 @@ TASK_INFO task_info;
 void sig_child(int signum,siginfo_t *info,void *myact) {
   pid_t  pid;
 
+//  exit(-1);
   //处理僵尸进程, -1 代表等待任意一个子进程, WNOHANG代表不阻塞
   while ((pid = waitpid(-1, NULL, WNOHANG)) > 0)
   {
@@ -73,26 +74,26 @@ void sig_sigusr2_from_child(int signum,siginfo_t *info,void *myact) {
 void checkWorkProcess() {
   std::cout<<__FILE__<<" "<<__LINE__<<" "<<work_process_info.process_status_<<std::endl;
 
-  if(work_process_info.process_status_ != WORK_PROCESS_RUNNING) {
-    std::cout<<__FILE__<<" "<<__LINE__<<std::endl;
-    auto pid = fork();
-    if(pid == 0 ) {
-      //child
-      run_work();
-      exit(0);
-    }else if (pid > 0 ) {
-      //parent
-      work_process_info.process_status_ = WORK_PROCESS_RUNNING;
-      work_process_info.pid_ = pid;
-      if(task_info.task_status_ == TASK_CRETATE) {
-        // child process crashed
-        std::string target_str = getGrpcServer();
-        auto client = JobManagerClient(grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
-        //todo 子进程崩溃
-        client.ReportTask(task_info.task_id_, taskmanager::TaskStatusWAIT, 0, "");
-      }
-    }
-  }
+//  if(work_process_info.process_status_ != WORK_PROCESS_RUNNING) {
+//    std::cout<<__FILE__<<" "<<__LINE__<<std::endl;
+//    auto pid = fork();
+//    if(pid == 0 ) {
+//      //child
+//      run_work();
+//      exit(0);
+//    }else if (pid > 0 ) {
+//      //parent
+//      work_process_info.process_status_ = WORK_PROCESS_RUNNING;
+//      work_process_info.pid_ = pid;
+//      if(task_info.task_status_ == TASK_CRETATE) {
+////        // child process crashed
+////        std::string target_str = getGrpcServer();
+////        auto client = JobManagerClient(grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
+////        //todo 子进程崩溃
+////        client.ReportTask(task_info.task_id_, taskmanager::TaskStatusWAIT, 0, "");
+//      }
+//    }
+//  }
 }
 
 void checkTask() {
@@ -101,13 +102,15 @@ void checkTask() {
     mysigval.sival_int=task_info.task_id_;
     //create job
     if(sigqueue(work_process_info.pid_,SIGUSR1,mysigval)==-1)
-      printf("send error＼n");
+      printf("send1 error＼n");
+    task_info.task_status_ = TASK_NONE;
   } else if (task_info.task_status_ == TASK_CANCEL) {
     union sigval mysigval;
     mysigval.sival_int=task_info.task_id_;
     //create job
     if(sigqueue(work_process_info.pid_,SIGUSR2,mysigval)==-1)
-      printf("send error＼n");
+      printf("send2 error＼n");
+    task_info.task_status_ = TASK_NONE;
   }
 }
 
@@ -138,7 +141,11 @@ void run_master() {
     checkTask();
     std::string user;
     std::string reply = greeter.report(getDeviceId(), user);
-    std::cout << "Greeter received: " << reply << std::endl;
+    std::cout << "masterProcess: " << reply << std::endl;
     sleep(10);
   }
+}
+void initWorkProcess(pid_t pid) {
+  work_process_info.pid_ = pid;
+  work_process_info.process_status_ = WORK_PROCESS_RUNNING;
 }

@@ -7,4 +7,5 @@
 
 void run_master();
 
+void initWorkProcess(pid_t pid);
 #endif //TEST_PROCESS_MASTERPROCESS_H_
