@@ -3,11 +3,14 @@
 //
 #include <iostream>
 #include<unistd.h>
+#include <fcntl.h>
 #include "config.h"
 #include "dispatchProcess/taskManager.h"
 #include "masterProcess/masterProcess.h"
 #include "dispatchProcess/dispatchProcess.h"
 #include "workProcess/workProcess.h"
+#include "define.h"
+const int BUFF_SIZE = 11;
 
 int main(int argc, char **argv) {
 
@@ -17,7 +20,57 @@ int main(int argc, char **argv) {
   auto parent_pid = getpid();
   taskManager::initParentPID(parent_pid);
 
-  run_work();
+  int pfd[2];
+
+  if (pipe(pfd) == -1)
+    printf("failed to create a pipe");
+
+  switch (fork())
+  {
+    case -1:
+      printf("failed to create a process");
+
+
+    case 0:run_work(pfd);
+//      if (close(pfd[1]) == -1)
+//        _exit(1);
+//
+//      char read_buff[BUFF_SIZE];
+//
+//      int readn = read(pfd[0], read_buff, BUFF_SIZE);
+//
+//      printf("child process read: %s\n", read_buff);
+
+      _exit(0);
+  }
+
+  if (close(pfd[0]) == -1)
+    exit(1);
+
+  char write_buff[] = "hello world";
+
+  std::cout<<"--------------->"<<std::endl;
+
+  sleep(10);
+
+//  int flag=fcntl(pfd[1], F_GETFL);
+//  fcntl(pfd[1], F_SETFL, flag|O_NONBLOCK);
+
+TASK_INFO info;
+info.task_id = 10010;
+info.cmd = 0;
+
+  int writen = write(pfd[1], &info, sizeof(TASK_INFO));
+
+  close(pfd[1]);
+
+  std::cout<<"--------------->"<<writen<<std::endl;
+
+  exit(0);
+
+
+
+ // run_work();
 
 //  auto pid = fork();
 //  if (pid == 0) {

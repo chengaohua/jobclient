@@ -35,10 +35,10 @@ typedef struct {
 typedef struct {
   TASK_STATUS  task_status_ = TASK_NONE;
   int task_id_ = 0;
-} TASK_INFO;
+} TASK_INFO2;
 
 WORK_PROCESS_INFO work_process_info;
-TASK_INFO task_info;
+TASK_INFO2 task_info;
 
 //子进程推出信号
 void sig_child(int signum,siginfo_t *info,void *myact) {

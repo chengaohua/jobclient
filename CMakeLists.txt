@@ -25,6 +25,7 @@ add_custom_command(
 
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
+include_directories("${CMAKE_CURRENT_LIST_DIR}/include_")
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 add_subdirectory(engine)
@@ -41,6 +42,7 @@ target_link_libraries(plugin ${OPENCV_LIBRARIES} )
 
 add_executable(jobClient main.cpp
        # hander/handerManager.cpp
+        workProcess/taskQueue.cpp
         grpc/device_manager.cpp
         grpc/job_manager.cpp
         dispatchProcess/taskManager.cpp
