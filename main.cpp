@@ -7,7 +7,7 @@
 #include <signal.h>
 #include <iostream>
 #include "config.h"
-#include "workProcess/workProcess.h"
+#include "workProcess/daemonProcess.h"
 #include "reportProcess/reportProcess.h"
 #include "dispatchProcess/dispatchProcess.h"
 #include "define.h"
@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
 
   switch (fork()) {
     case -1:printf("failed to create a process");
+      break;
 
     case 0: {
       run_report();
@@ -35,8 +36,9 @@ int main(int argc, char **argv) {
 
   switch (fork()) {
     case -1:printf("failed to create a process");
+      break;
 
-    case 0:run_work(pfd);
+    case 0:run_daemon_work(pfd);
       _exit(0);
   }
 

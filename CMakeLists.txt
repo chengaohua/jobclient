@@ -41,7 +41,7 @@ target_link_libraries(plugin ${OPENCV_LIBRARIES} )
 
 
 add_executable(jobClient main.cpp
-       # hander/handerManager.cpp
+        workProcess/daemonProcess.cpp
         workProcess/taskQueue.cpp
         grpc/device_manager.cpp
         grpc/job_manager.cpp
